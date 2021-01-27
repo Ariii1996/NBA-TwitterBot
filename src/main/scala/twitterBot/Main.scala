@@ -1,7 +1,6 @@
 package twitterBot
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import akka.stream.ActorMaterializer
 import twitterBot.{NewActor}
 import twitterBot.{ListenMentions, TwitterBot}
 
@@ -12,7 +11,7 @@ object Main {
 
     val system = ActorSystem()
 
-    val newActor = system.actorOf(Props(classOf[NewActor]), "newActor")
+    val newActor = system.actorOf(Props(classOf[NewActor], system), "newActor")
     val twitterBot = system.actorOf(Props(classOf[TwitterBot], newActor), "twitterBot")
 
     twitterBot ! ListenMentions

@@ -12,7 +12,7 @@ class TwitterBot(newActor: ActorRef) extends Actor {
 
   val restClient = TwitterRestClient()
   val streamingClient = TwitterStreamingClient() //is the client to support stream
-                                        // connections offered by the Twitter Streaming Api.
+  // connections offered by the Twitter Streaming Api.
 
   val NBAAccount = Seq("NBAInformation6")
 
@@ -42,8 +42,6 @@ class TwitterBot(newActor: ActorRef) extends Actor {
     case _ => println("Se recibio otra cosa")
   }
 }
-
-
 
 
 
