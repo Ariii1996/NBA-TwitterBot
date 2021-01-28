@@ -17,4 +17,3 @@ libraryDependencies ++= Seq(
 
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
 libraryDependencies += "com.danielasfregola" %% "twitter4s" % "6.2"
-

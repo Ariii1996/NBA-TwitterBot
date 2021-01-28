@@ -1,8 +1,6 @@
 package twitterBot
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import twitterBot.{NewActor}
-import twitterBot.{ListenMentions, TwitterBot}
+import akka.actor.{ActorSystem, Props}
 
 
 object Main {
@@ -11,9 +9,10 @@ object Main {
 
     val system = ActorSystem()
 
-    val newActor = system.actorOf(Props(classOf[NewActor], system), "newActor")
-    val twitterBot = system.actorOf(Props(classOf[TwitterBot], newActor), "twitterBot")
+    val TwitterResponder = system.actorOf(Props(classOf[TwitterResponder]), "TwitterResponder")
+    val NBArequester = system.actorOf(Props(classOf[NBArequester], system, TwitterResponder), "NBArequester")
+    val TwitterBot = system.actorOf(Props(classOf[TwitterBot], NBArequester), "twitterBot")
 
-    twitterBot ! ListenMentions
+    TwitterBot ! ListenMentions
   }
 }
