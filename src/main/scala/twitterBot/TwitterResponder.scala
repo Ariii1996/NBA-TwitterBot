@@ -1,7 +1,9 @@
 package twitterBot
 
 import java.text.SimpleDateFormat
-import java.util.{Calendar, Date}
+import java.time.{Instant, LocalDateTime, ZoneId}
+import java.time.format.DateTimeFormatter
+import java.util.{Locale, Date}
 
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.TwitterRestClient
@@ -15,23 +17,21 @@ class TwitterResponder() extends Actor {
 
   val client = TwitterRestClient()
 
-  var next_day = false
+  val inputDate = "2021/01/29 11:00";
 
-  def argentinaTime(etTime: String): String ={
-    next_day = false
-    var new_time = ""
-    if(etTime(1) == ':'){
-      val arg_time = etTime.substring(0,1).toInt + 14
-      new_time = s"${arg_time.toString}${etTime.substring(1,5)} hs"
-    }else{
-      var arg_time = etTime.substring(0,2).toInt + 14
-      if (arg_time >= 24) {
-        arg_time -= 24
-        next_day = true
-      }
-      new_time = s"${arg_time.toString}${etTime.substring(2,6)} hs"
-    }
-    new_time
+
+
+  def newDate(date: String, status: String) = {
+    val dateString = date.substring(0,10)
+    var timeString = ""
+    if(status(1) == ':') timeString = "0" + timeString.concat(status.substring(0,4))
+    else timeString = timeString.concat(status.substring(0,5))
+    val newDateString = dateString + " " + timeString + " PM"
+    val sourceFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a", Locale.US)
+    val localZone = LocalDateTime.parse(newDateString, sourceFormatter)
+    val ESTzone = localZone.atZone(ZoneId.of("America/New_York"))
+    val result = ESTzone.withZoneSameInstant(ZoneId.of("America/Buenos_Aires")).toString
+    (result.substring(8,10) + "/" + result.substring(5,7) + "/" + result.substring(0,4), result.substring(11,16) + " hs")
   }
 
   def receive = {
@@ -40,11 +40,7 @@ class TwitterResponder() extends Actor {
         val date_format = new SimpleDateFormat("dd/MM/yyyy")
         val local_team = game("home_team")("full_name").as[String].replaceAll("\\s", "")
         val visitor_team = game("visitor_team")("full_name").as[String].replaceAll("\\s", "")
-        val time = argentinaTime(game("status").as[String])
-        var date = date_format.format(game("date").as[Date])
-        if (next_day) {
-          date = s"${(date.substring(0,2).toInt + 1).toString}${date.substring(2)}"
-        }
+        val (date, time) = newDate(game("date").as[String], game("status").as[String])
         client.createTweet(
           status=s"@${tweet.user.get.screen_name} El próximo partido de los #${team_name} es:" +
             s"\n\n#$local_team vs #$visitor_team " +

@@ -2,7 +2,6 @@ package twitterBot
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
-
 import akka.actor.{Actor, ActorRef, ActorSystem}
 import com.danielasfregola.twitter4s.entities.Tweet
 
