@@ -20,8 +20,7 @@ class TwitterResponder() extends Actor {
   val inputDate = "2021/01/29 11:00";
 
 
-
-  def newDate(date: String, status: String) = {
+  def timeZoneChangeToBsAs(date: String, status: String) = {
     val dateString = date.substring(0,10)
     var timeString = ""
     if(status(1) == ':') timeString = "0" + timeString.concat(status.substring(0,4))
@@ -40,7 +39,7 @@ class TwitterResponder() extends Actor {
         val date_format = new SimpleDateFormat("dd/MM/yyyy")
         val local_team = game("home_team")("full_name").as[String].replaceAll("\\s", "")
         val visitor_team = game("visitor_team")("full_name").as[String].replaceAll("\\s", "")
-        val (date, time) = newDate(game("date").as[String], game("status").as[String])
+        val (date, time) = timeZoneChangeToBsAs(game("date").as[String], game("status").as[String])
         client.createTweet(
           status=s"@${tweet.user.get.screen_name} El próximo partido de los #${team_name} es:" +
             s"\n\n#$local_team vs #$visitor_team " +
