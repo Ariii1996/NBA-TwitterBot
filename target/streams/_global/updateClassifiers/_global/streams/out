@@ -1,4 +1,4 @@
 [debug] not up to date. inChanged = true, force = false
-[debug] Updating ProjectRef(uri("file:/home/ari/Documentos/Facultad/TDL/NBA-TwitterBot/"), "nba-twitterbot")...
-[debug] Done updating ProjectRef(uri("file:/home/ari/Documentos/Facultad/TDL/NBA-TwitterBot/"), "nba-twitterbot")
+[debug] Updating ProjectRef(uri("file:/home/fer/NBA-TwitterBot/"), "nba-twitterbot")...
+[debug] Done updating ProjectRef(uri("file:/home/fer/NBA-TwitterBot/"), "nba-twitterbot")
 [warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.

@@ -13,9 +13,8 @@ class TwitterResponder() extends Actor {
   def receive = {
 
       case TweetIt(response, tweet) => {
-        val res = response.substring(0,10)
         client.createTweet(
-          status=s"@${tweet.user.get.screen_name} Te dejo la informacion que buscabas: \n${res}",
+          status=s"@${tweet.user.get.screen_name} Te dejo la informacion que buscabas: \n${response}",
           in_reply_to_status_id=Option(tweet.id)
         )
       }

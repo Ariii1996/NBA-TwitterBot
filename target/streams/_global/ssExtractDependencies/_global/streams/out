@@ -1,8 +1,18 @@
-[error] sbt.librarymanagement.ResolveException: Error downloading ch.qos.logback:logback-classic_2.13:1.2.3
+[error] sbt.librarymanagement.ResolveException: Error downloading io.circe:circe-generic_2.13:0.7.0
 [error]   Not found
 [error]   Not found
-[error]   not found: /home/ari/.ivy2/localch.qos.logback/logback-classic_2.13/1.2.3/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/ch/qos/logback/logback-classic_2.13/1.2.3/logback-classic_2.13-1.2.3.pom
+[error]   not found: /home/fer/.ivy2/localio.circe/circe-generic_2.13/0.7.0/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-generic_2.13/0.7.0/circe-generic_2.13-0.7.0.pom
+[error] Error downloading io.circe:circe-core_2.13:0.7.0
+[error]   Not found
+[error]   Not found
+[error]   not found: /home/fer/.ivy2/localio.circe/circe-core_2.13/0.7.0/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-core_2.13/0.7.0/circe-core_2.13-0.7.0.pom
+[error] Error downloading io.circe:circe-parser_2.13:0.7.0
+[error]   Not found
+[error]   Not found
+[error]   not found: /home/fer/.ivy2/localio.circe/circe-parser_2.13/0.7.0/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-parser_2.13/0.7.0/circe-parser_2.13-0.7.0.pom
 [error] 	at lmcoursier.CoursierDependencyResolution.unresolvedWarningOrThrow(CoursierDependencyResolution.scala:258)
 [error] 	at lmcoursier.CoursierDependencyResolution.$anonfun$update$38(CoursierDependencyResolution.scala:227)
 [error] 	at scala.util.Either$LeftProjection.map(Either.scala:573)
@@ -30,11 +40,21 @@
 [error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
 [error] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
 [error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
-[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
-[error] 	at java.base/java.lang.Thread.run(Thread.java:834)
-[error] (ssExtractDependencies) sbt.librarymanagement.ResolveException: Error downloading ch.qos.logback:logback-classic_2.13:1.2.3
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:832)
+[error] (ssExtractDependencies) sbt.librarymanagement.ResolveException: Error downloading io.circe:circe-generic_2.13:0.7.0
 [error]   Not found
 [error]   Not found
-[error]   not found: /home/ari/.ivy2/localch.qos.logback/logback-classic_2.13/1.2.3/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/ch/qos/logback/logback-classic_2.13/1.2.3/logback-classic_2.13-1.2.3.pom
+[error]   not found: /home/fer/.ivy2/localio.circe/circe-generic_2.13/0.7.0/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-generic_2.13/0.7.0/circe-generic_2.13-0.7.0.pom
+[error] Error downloading io.circe:circe-core_2.13:0.7.0
+[error]   Not found
+[error]   Not found
+[error]   not found: /home/fer/.ivy2/localio.circe/circe-core_2.13/0.7.0/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-core_2.13/0.7.0/circe-core_2.13-0.7.0.pom
+[error] Error downloading io.circe:circe-parser_2.13:0.7.0
+[error]   Not found
+[error]   Not found
+[error]   not found: /home/fer/.ivy2/localio.circe/circe-parser_2.13/0.7.0/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-parser_2.13/0.7.0/circe-parser_2.13-0.7.0.pom
