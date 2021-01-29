@@ -18,6 +18,7 @@ class TwitterResponder() extends Actor {
   var next_day = false
 
   def argentinaTime(etTime: String): String ={
+    next_day = false
     var new_time = ""
     if(etTime(1) == ':'){
       val arg_time = etTime.substring(0,1).toInt + 14
@@ -36,7 +37,6 @@ class TwitterResponder() extends Actor {
   def receive = {
 
       case TweetNextGame(game, tweet, team_name) => {
-        next_day = false
         val date_format = new SimpleDateFormat("dd/MM/yyyy")
         val local_team = game("home_team")("full_name").as[String].replaceAll("\\s", "")
         val visitor_team = game("visitor_team")("full_name").as[String].replaceAll("\\s", "")
