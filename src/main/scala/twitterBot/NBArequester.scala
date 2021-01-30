@@ -17,9 +17,9 @@ import scala.util.{Failure, Success}
 import scala.concurrent.duration.DurationInt
 
 case class searchTeamNextGame(team_name: String, tweet: Tweet)
+case class searchPlayerStats(player_firstname: String, player_lastname: String, tweet: Tweet)
 
 class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Actor {
-
 
   def doRequest(query: String) = {
     implicit val actorSystem = system
@@ -56,7 +56,13 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
     id
   }
 
-  def receive = {
+  def searchPlayer(players_for_name: JsValue ,players_for_surname: JsValue): List[JsObject] = {
+    val total_players_for_name = (players_for_name("data")).as[List[JsObject]]
+    val total_players_for_surname = (players_for_surname("data")).as[List[JsObject]]
+    total_players_for_name.intersect(total_players_for_surname)
+  }
+
+  def receive: Receive = {
 
     case searchTeamNextGame(team_name, tweet) => {
 
@@ -81,6 +87,25 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
         case Failure(e) =>
           println(s"Error buscando equipos: $e")
       }
+    }
+
+    case searchPlayerStats(player_firstname, player_lastname, tweet) => {
+
+      val responseFuture1 = doRequest(s"players?per_page=100&search=$player_firstname")
+      val responseFuture2 = doRequest(s"players?per_page=100&search=$player_lastname")
+
+      val player = for {
+        player_for_name <- responseFuture1
+        player_for_surname <- responseFuture2
+      }yield(player_for_name, player_for_surname)
+
+      player.onComplete{
+        case Success((player_for_name,player_for_surname)) =>
+          val player = (searchPlayer(player_for_name, player_for_surname))
+          TwitterResponder ! TweetPlayerStats(player(0), tweet)
+        case Failure(e) => println(s"Hubo un error con el player $e")
+      }
+
     }
   }
 }

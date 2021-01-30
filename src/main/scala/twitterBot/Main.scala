@@ -2,7 +2,6 @@ package twitterBot
 
 import akka.actor.{ActorSystem, Props}
 
-
 object Main {
 
   def main(args: Array[String]): Unit = {
