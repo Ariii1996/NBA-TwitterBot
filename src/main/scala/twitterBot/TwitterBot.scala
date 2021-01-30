@@ -8,6 +8,8 @@ case class ListenMentions()
 
 class TwitterBot(HashtagController: ActorRef) extends Actor {
 
+  val id = 1348657069847666688L
+
   val streamingClient = TwitterStreamingClient() //is the client to support stream
   // connections offered by the Twitter Streaming Api.
 
@@ -17,7 +19,9 @@ class TwitterBot(HashtagController: ActorRef) extends Actor {
 
     case ListenMentions => {
       streamingClient.filterStatuses(tracks=NBAAccount) {
-        case tweet: Tweet => HashtagController ! ManageTweet(tweet)
+        case tweet: Tweet => {
+          if(id != tweet.user.get.id) HashtagController ! ManageTweet(tweet)
+        }
       }
     }
     case _ => println("Se recibio otra cosa")

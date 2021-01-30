@@ -131,14 +131,18 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
 
       player.onComplete{
         case Success((player_for_name,player_for_surname)) =>
-          val player = searchPlayer(player_for_name, player_for_surname).head
-          val player_id = player("id").as[Int]
-          val futureStatsPlayer = doRequest(s"stats/?seasons[]=2020&per_page=110&player_ids[]=$player_id")
+          val searched_player = searchPlayer(player_for_name, player_for_surname)
+          if (searched_player.isEmpty) println("No se introdujo el nombre o apellido correcto del jugador")
+          else {
+            val player = searched_player.head
+            val player_id = player("id").as[Int]
+            val futureStatsPlayer = doRequest(s"stats/?seasons[]=2020&per_page=110&player_ids[]=$player_id")
 
-          futureStatsPlayer.onComplete{
-            case Success(stats) =>
-              TwitterResponder ! TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
-            case Failure(e) => println(s"Hubo un error al buscar los stats $e")
+            futureStatsPlayer.onComplete {
+              case Success(stats) =>
+                TwitterResponder ! TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
+              case Failure(e) => println(s"Hubo un error al buscar los stats $e")
+            }
           }
         case Failure(e) => println(s"Hubo un error con el player $e")
       }

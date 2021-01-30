@@ -5,7 +5,7 @@ import com.danielasfregola.twitter4s.entities.Tweet
 
 case class ManageTweet(tweet: Tweet)
 
-class HashtagController(NBArequester: ActorRef) extends Actor {
+class HashtagController(NBArequester: ActorRef, TwitterResponder: ActorRef) extends Actor {
 
   def receive: Receive = {
     case ManageTweet(tweet) => {
@@ -21,11 +21,13 @@ class HashtagController(NBArequester: ActorRef) extends Actor {
         case "Jugador" => {
           if(firstHashtag != "" & secondHashtag != "")
             NBArequester ! searchPlayerStats(firstHashtag, secondHashtag, tweet)
+          else println("No se introdujo el nombre o el apellido del jugador")
         }
         case "Proximopartido" => {
           if(firstHashtag != "") NBArequester ! searchTeamNextGame(firstHashtag, tweet)
+          else println("No se introdujo el nombre del equipo")
         }
-        //case "Comandos" => NBArequester !
+        case "Ayuda" => TwitterResponder ! TweetHelp(tweet)
         case _ => println("No hubo hashtag de acción")
       }
     }

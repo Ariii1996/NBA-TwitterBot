@@ -1,18 +1,8 @@
-[error] sbt.librarymanagement.ResolveException: Error downloading io.circe:circe-generic_2.13:0.7.0
+[error] sbt.librarymanagement.ResolveException: Error downloading com.danielasfregola:twitter4s_2.13:6.1
 [error]   Not found
 [error]   Not found
-[error]   not found: /home/fer/.ivy2/localio.circe/circe-generic_2.13/0.7.0/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-generic_2.13/0.7.0/circe-generic_2.13-0.7.0.pom
-[error] Error downloading io.circe:circe-core_2.13:0.7.0
-[error]   Not found
-[error]   Not found
-[error]   not found: /home/fer/.ivy2/localio.circe/circe-core_2.13/0.7.0/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-core_2.13/0.7.0/circe-core_2.13-0.7.0.pom
-[error] Error downloading io.circe:circe-parser_2.13:0.7.0
-[error]   Not found
-[error]   Not found
-[error]   not found: /home/fer/.ivy2/localio.circe/circe-parser_2.13/0.7.0/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-parser_2.13/0.7.0/circe-parser_2.13-0.7.0.pom
+[error]   not found: /home/ari/.ivy2/localcom.danielasfregola/twitter4s_2.13/6.1/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/com/danielasfregola/twitter4s_2.13/6.1/twitter4s_2.13-6.1.pom
 [error] 	at lmcoursier.CoursierDependencyResolution.unresolvedWarningOrThrow(CoursierDependencyResolution.scala:258)
 [error] 	at lmcoursier.CoursierDependencyResolution.$anonfun$update$38(CoursierDependencyResolution.scala:227)
 [error] 	at scala.util.Either$LeftProjection.map(Either.scala:573)
@@ -43,18 +33,8 @@
 [error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130)
 [error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630)
 [error] 	at java.base/java.lang.Thread.run(Thread.java:832)
-[error] (ssExtractDependencies) sbt.librarymanagement.ResolveException: Error downloading io.circe:circe-generic_2.13:0.7.0
+[error] (ssExtractDependencies) sbt.librarymanagement.ResolveException: Error downloading com.danielasfregola:twitter4s_2.13:6.1
 [error]   Not found
 [error]   Not found
-[error]   not found: /home/fer/.ivy2/localio.circe/circe-generic_2.13/0.7.0/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-generic_2.13/0.7.0/circe-generic_2.13-0.7.0.pom
-[error] Error downloading io.circe:circe-core_2.13:0.7.0
-[error]   Not found
-[error]   Not found
-[error]   not found: /home/fer/.ivy2/localio.circe/circe-core_2.13/0.7.0/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-core_2.13/0.7.0/circe-core_2.13-0.7.0.pom
-[error] Error downloading io.circe:circe-parser_2.13:0.7.0
-[error]   Not found
-[error]   Not found
-[error]   not found: /home/fer/.ivy2/localio.circe/circe-parser_2.13/0.7.0/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/io/circe/circe-parser_2.13/0.7.0/circe-parser_2.13-0.7.0.pom
+[error]   not found: /home/ari/.ivy2/localcom.danielasfregola/twitter4s_2.13/6.1/ivys/ivy.xml
+[error]   not found: https://repo1.maven.org/maven2/com/danielasfregola/twitter4s_2.13/6.1/twitter4s_2.13-6.1.pom
