@@ -18,4 +18,16 @@ class Utils() {
     val ARGzone = ESTzone.withZoneSameInstant(ZoneId.of("America/Buenos_Aires")).toString
     (ARGzone.substring(8, 10) + "/" + ARGzone.substring(5, 7) + "/" + ARGzone.substring(0, 4), ARGzone.substring(11, 16) + " hs")
   }
+
+  def positionParse(position: String): String ={
+    position match {
+      case "F" => "Alero"
+      case "G" => "Base/Escolta"
+      case "G-F" => "Escolta/Alero"
+      case "F-G" => "Base/Alero"
+      case "C" => "Pivot"
+      case "F-C" => "Ala-pivot"
+      case _ => position
+    }
+  }
 }
