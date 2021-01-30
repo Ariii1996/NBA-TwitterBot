@@ -9,7 +9,9 @@ import play.api.libs.json.JsValue
 case class TweetNextGame(game: JsValue, tweet: Tweet, team_name: String)
 case class TweetPlayerStats(player: Seq[Any], tweet: Tweet)
 case class TweetHelp(tweet: Tweet)
-
+case class TweetError(tweet: Tweet, message: String)
+case class TweetInternalError(tweet: Tweet)
+case class TweetWelcome(tweet: Tweet)
 
 class TwitterResponder() extends Actor {
 
@@ -55,6 +57,31 @@ class TwitterResponder() extends Actor {
             s"\n@NBAInformation6 #ProximoPartido #NombreDeTuEquipo" +
             s"\n\n- Información sobre tu jugador: " +
             s"\n@NBAInformation6 #Jugador #NombreDeTuJugador #ApellidoDeTuJugador",
+          in_reply_to_status_id=Option(tweet.id)
+        )
+      }
+
+      case TweetError(tweet, message) => {
+        client.createTweet(
+          status=s"@${tweet.user.get.screen_name} $message" +
+            s"\n\nPara más ayuda: " +
+            s"\n@NBAInformation6 #Ayuda",
+          in_reply_to_status_id=Option(tweet.id)
+        )
+      }
+
+      case TweetInternalError(tweet) => {
+        client.createTweet(
+          status=s"@${tweet.user.get.screen_name} Lo sentimos, ocurrió un error en nuestros servidores",
+          in_reply_to_status_id=Option(tweet.id)
+        )
+      }
+
+      case TweetWelcome(tweet) => {
+        client.createTweet(
+          status=s"@${tweet.user.get.screen_name} " +
+            s"Hola! Si querés ver que iformación te puedo dar twittea: " +
+            s"\n\n@NBAInformation6 #Ayuda",
           in_reply_to_status_id=Option(tweet.id)
         )
       }

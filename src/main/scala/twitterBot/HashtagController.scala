@@ -16,20 +16,21 @@ class HashtagController(NBArequester: ActorRef, TwitterResponder: ActorRef) exte
         action = hashtags.head.text.toLowerCase().capitalize
         if(hashtags.size >= 2) firstHashtag = hashtags(1).text.toLowerCase().capitalize
         if(hashtags.size >= 3) secondHashtag = hashtags(2).text.toLowerCase().capitalize
-      }
-      action match {
-        case "Jugador" => {
-          if(firstHashtag != "" & secondHashtag != "")
-            NBArequester ! searchPlayerStats(firstHashtag, secondHashtag, tweet)
-          else println("No se introdujo el nombre o el apellido del jugador")
+
+        action match {
+          case "Jugador" => {
+            if(firstHashtag != "" & secondHashtag != "")
+              NBArequester ! searchPlayerStats(firstHashtag, secondHashtag, tweet)
+            else TwitterResponder ! TweetError(tweet, "No se introdujo el nombre o el apellido del jugador")
+          }
+          case "Proximopartido" => {
+            if(firstHashtag != "") NBArequester ! searchTeamNextGame(firstHashtag, tweet)
+            else TwitterResponder ! TweetError(tweet, "No se introdujo el nombre del equipo")
+          }
+          case "Ayuda" => TwitterResponder ! TweetHelp(tweet)
+          case _ => TwitterResponder ! TweetError(tweet, "No se introdujo ninguna acción")
         }
-        case "Proximopartido" => {
-          if(firstHashtag != "") NBArequester ! searchTeamNextGame(firstHashtag, tweet)
-          else println("No se introdujo el nombre del equipo")
-        }
-        case "Ayuda" => TwitterResponder ! TweetHelp(tweet)
-        case _ => println("No hubo hashtag de acción")
-      }
+      }else TwitterResponder ! TweetWelcome(tweet)
     }
   }
 }

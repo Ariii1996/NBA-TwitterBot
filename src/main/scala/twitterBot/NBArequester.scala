@@ -110,12 +110,16 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
               case Success(games) =>
                 val game = searchNextGame(games)
                 TwitterResponder ! TweetNextGame(game, tweet, team_name)
-              case Failure(e) =>
+              case Failure(e) =>{
                 println(s"Error buscando id de equipo: $e")
+                TwitterResponder ! TweetInternalError(tweet)
+              }
             }
-          }else println("El nombre del equipo es incorrecto")
-        case Failure(e) =>
+          }else TwitterResponder ! TweetError(tweet, "No se introdujo el nombre del equipo correctamente")
+        case Failure(e) =>{
           println(s"Error buscando equipos: $e")
+          TwitterResponder ! TweetInternalError(tweet)
+        }
       }
     }
 
@@ -132,7 +136,8 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
       player.onComplete{
         case Success((player_for_name,player_for_surname)) =>
           val searched_player = searchPlayer(player_for_name, player_for_surname)
-          if (searched_player.isEmpty) println("No se introdujo el nombre o apellido correcto del jugador")
+          if (searched_player.isEmpty)
+            TwitterResponder ! TweetError(tweet, "No se introdujo el nombre o apellido del jugador correctamente")
           else {
             val player = searched_player.head
             val player_id = player("id").as[Int]
@@ -141,10 +146,16 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
             futureStatsPlayer.onComplete {
               case Success(stats) =>
                 TwitterResponder ! TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
-              case Failure(e) => println(s"Hubo un error al buscar los stats $e")
+              case Failure(e) => {
+                println(s"Hubo un error al buscar los stats $e")
+                TwitterResponder ! TweetInternalError(tweet)
+              }
             }
           }
-        case Failure(e) => println(s"Hubo un error con el player $e")
+        case Failure(e) => {
+          println(s"Hubo un error con el player $e")
+          TwitterResponder ! TweetInternalError(tweet)
+        }
       }
 
     }

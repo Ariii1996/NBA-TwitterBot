@@ -24,7 +24,6 @@ class TwitterBot(HashtagController: ActorRef) extends Actor {
         }
       }
     }
-    case _ => println("Se recibio otra cosa")
   }
 }
 
