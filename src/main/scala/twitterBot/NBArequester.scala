@@ -114,13 +114,13 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
                 val game = searchNextGame(games)
                 TwitterResponder ! TweetNextGame(game, tweet, team_name)
               case Failure(e) =>{
-                println(s"Error buscando id de equipo: $e")
+                println(s"Error buscando id de equipo: $e.")
                 TwitterResponder ! TweetInternalError(tweet)
               }
             }
           }else TwitterResponder ! TweetError(tweet, "No se introdujo el nombre del equipo correctamente")
         case Failure(e) =>{
-          println(s"Error buscando equipos: $e")
+          println(s"Error buscando equipos: $e.")
           TwitterResponder ! TweetInternalError(tweet)
         }
       }
@@ -155,13 +155,13 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
               }
 
               case Failure(e) => {
-                println(s"Hubo un error al buscar los stats $e")
+                println(s"Hubo un error al buscar los stats $e.")
                 TwitterResponder ! TweetInternalError(tweet)
               }
             }
           }
         case Failure(e) => {
-          println(s"Hubo un error con el player $e")
+          println(s"Hubo un error con el player $e.")
           TwitterResponder ! TweetInternalError(tweet)
         }
       }
