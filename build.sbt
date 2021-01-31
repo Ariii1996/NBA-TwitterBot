@@ -23,5 +23,5 @@ enablePlugins(JavaAppPackaging)
 herokuAppName in Compile := "nba-information-twitter-bot" // unique Heroku app name
 herokuJdkVersion in Compile := "11.0.9.1"
 herokuProcessTypes in Compile := Map(
-  "web" -> "target/universal/stage/bin/NBA-TwitterBot" // project name
+  "web" -> "target/universal/stage/bin/TwitterBot" // project name
 )
