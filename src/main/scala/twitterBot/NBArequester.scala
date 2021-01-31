@@ -66,10 +66,15 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
     val stats_lenght = stats_meta("total_count").as[Int] - 1
     val name_and_surname = stats_data(0)("player")("first_name").as[String] + stats_data(0)("player")("last_name").as[String]
     val position = stats_data(stats_lenght)("player")("position").as[String]
-    val height_feet = stats_data(stats_lenght)("player")("height_feet").as[Int]
-    val height_inches = stats_data(stats_lenght)("player")("height_inches").as[Int]
-    val height = ((height_feet * 0.3048 + height_inches * 0.0254) * 100).round / 100.toDouble
-    val weight = ((stats_data(stats_lenght)("player")("weight_pounds").as[Int] * 0.453592) * 100).round / 100.toDouble
+    val height_feet = stats_data(stats_lenght)("player")("height_feet")
+    val height_inches = stats_data(stats_lenght)("player")("height_inches")
+    var height = 0.0
+    if (height_feet != JsNull && height_inches != JsNull)
+      height = ((height_feet.as[Int] * 0.3048 + height_inches.as[Int] * 0.0254) * 100).round / 100.toDouble
+    val weight_punds = stats_data(stats_lenght)("player")("weight_pounds")
+    var weight = 0.0
+    if (weight_punds != JsNull)
+      weight = ((weight_punds.as[Int] * 0.453592) * 100).round / 100.toDouble
     val team = stats_data(stats_lenght)("team")("full_name").as[String].replaceAll("\\s", "")
     var (pointsPerGame, reboundsPerGame, blocksPerGame, assistsPerGame, stealsPerGame) = (0.0,0.0,0.0,0.0,0.0)
     for (i <- 0 to stats_lenght) {
@@ -80,7 +85,7 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
       stealsPerGame += stats_data(i)("stl").as[Int]
     }
 
-    var prev_stats = Seq(name_and_surname, team, position, height, weight)
+    val prev_stats = Seq(name_and_surname, team, position, height, weight)
     prev_stats ++ Seq(
       pointsPerGame,
       assistsPerGame,
@@ -88,8 +93,6 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
       blocksPerGame,
       stealsPerGame,
       ).map(stat => ((stat / stats_lenght) * 100).round / 100.toDouble)
-
-
   }
 
   def receive: Receive = {
@@ -144,8 +147,13 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
             val futureStatsPlayer = doRequest(s"stats/?seasons[]=2020&per_page=110&player_ids[]=$player_id")
 
             futureStatsPlayer.onComplete {
-              case Success(stats) =>
-                TwitterResponder ! TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
+              case Success(stats) =>{
+                if (stats("meta")("total_count").as[Int] != 0)
+                  TwitterResponder ! TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
+                else
+                  TwitterResponder ! TweetError(tweet, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
+              }
+
               case Failure(e) => {
                 println(s"Hubo un error al buscar los stats $e")
                 TwitterResponder ! TweetInternalError(tweet)

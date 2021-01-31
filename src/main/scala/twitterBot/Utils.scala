@@ -27,7 +27,7 @@ class Utils() {
       case "F-G" => "Base/Alero"
       case "C" => "Pivot"
       case "F-C" => "Ala-pivot"
-      case _ => position
+      case _ => "Indefinido"
     }
   }
 }
