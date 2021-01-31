@@ -6,7 +6,7 @@ import java.util.Locale
 
 class Utils() {
 
-  def timeZoneChangeToBsAs(date: String, status: String) = {
+  def timeZoneChangeToBsAs(date: String, status: String): (String, String) = {
     val dateString = date.substring(0, 10)
     var timeString = ""
     if (status(1) == ':') timeString = "0" + timeString.concat(status.substring(0, 4))
