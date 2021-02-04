@@ -17,10 +17,10 @@ import akka.util.Timeout
 import scala.util.{Failure, Success}
 import scala.concurrent.duration.DurationInt
 
-case class searchTeamNextGame(team_name: String, tweet: Tweet)
-case class searchPlayerStats(player_firstname: String, player_lastname: String, tweet: Tweet)
+case class searchTeamNextGame(team_name: String, ɼequest: Tweet)
+case class searchPlayerStats(player_firstname: String, player_lastname: String, ɼequest: Tweet)
 
-class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Actor {
+class NBArequester(system: ActorSystem) extends Actor {
 
   def doRequest(query: String) = {
     implicit val actorSystem = system
@@ -96,8 +96,9 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
   }
 
   def receive: Receive = {
-    case searchTeamNextGame(team_name, tweet) => {
+    case searchTeamNextGame(team_name, ɼequest) => {
       val responseFuture = doRequest("teams")
+      val Sender = sender()
       responseFuture
         .map(teams => {
           val id_team = searchTeamId(teams, team_name)
@@ -106,12 +107,13 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
             val today = format.format(Calendar.getInstance().getTime())
             val responseFuture = doRequest(s"games?team_ids[]=${id_team.toString}&start_date=$today")
             responseFuture
-              .map(games => TweetNextGame(searchNextGame(games), tweet, team_name))
-              .pipeTo(TwitterResponder)
-          }else TwitterResponder ! TweetError(tweet, "No se introdujo el nombre del equipo correctamente")
+              .map(games => SendNextGame(searchNextGame(games), ɼequest, team_name))
+              .pipeTo(Sender)
+          }else Sender ! SendError(ɼequest, "No se introdujo el nombre del equipo correctamente")
         })
     }
-    case searchPlayerStats(player_firstname, player_lastname, tweet) => {
+    case searchPlayerStats(player_firstname, player_lastname, ɼequest) => {
+      val Sender = sender()
       val futureNamePlayer = doRequest(s"players?per_page=100&search=$player_firstname")
       val futureSurnamePlayer = doRequest(s"players?per_page=100&search=$player_lastname")
       val player = for {
@@ -123,7 +125,7 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
           val (player_for_name, player_for_surname) = playerAux
           val searched_player = searchPlayer(player_for_name, player_for_surname)
           if (searched_player.isEmpty)
-            TwitterResponder ! TweetError(tweet, "No se introdujo el nombre o apellido del jugador correctamente")
+            Sender ! SendError(ɼequest, "No se introdujo el nombre o apellido del jugador correctamente")
           else {
             val player = searched_player.head
             val player_id = player("id").as[Int]
@@ -131,11 +133,11 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
             futureStatsPlayer
               .map(stats => {
                 if (stats("meta")("total_count").as[Int] != 0)
-                  TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
+                  SendPlayerStats(playerStatsFinder(stats("data"), stats("meta")), ɼequest)
                 else
-                  TweetError(tweet, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
+                  SendError(ɼequest, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
               })
-              .pipeTo(TwitterResponder)
+              .pipeTo(Sender)
           }
         })
     }
