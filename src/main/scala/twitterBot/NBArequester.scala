@@ -17,8 +17,8 @@ import akka.util.Timeout
 import scala.util.{Failure, Success}
 import scala.concurrent.duration.DurationInt
 
-case class searchTeamNextGame(team_name: String, ɼequest: Tweet)
-case class searchPlayerStats(player_firstname: String, player_lastname: String, ɼequest: Tweet)
+case class searchTeamNextGame(team_name: String, ɼequest: Request)
+case class searchPlayerStats(player_firstname: String, player_lastname: String, ɼequest: Request)
 
 class NBArequester(system: ActorSystem) extends Actor {
 
@@ -107,9 +107,9 @@ class NBArequester(system: ActorSystem) extends Actor {
             val today = format.format(Calendar.getInstance().getTime())
             val responseFuture = doRequest(s"games?team_ids[]=${id_team.toString}&start_date=$today")
             responseFuture
-              .map(games => SendNextGame(searchNextGame(games), ɼequest, team_name))
+              .map(games => ResolvesNextGame(searchNextGame(games), ɼequest, team_name))
               .pipeTo(Sender)
-          }else Sender ! SendError(ɼequest, "No se introdujo el nombre del equipo correctamente")
+          }else Sender ! ResolvesError(ɼequest, "No se introdujo el nombre del equipo correctamente")
         })
     }
     case searchPlayerStats(player_firstname, player_lastname, ɼequest) => {
@@ -125,7 +125,7 @@ class NBArequester(system: ActorSystem) extends Actor {
           val (player_for_name, player_for_surname) = playerAux
           val searched_player = searchPlayer(player_for_name, player_for_surname)
           if (searched_player.isEmpty)
-            Sender ! SendError(ɼequest, "No se introdujo el nombre o apellido del jugador correctamente")
+            Sender ! ResolvesError(ɼequest, "No se introdujo el nombre o apellido del jugador correctamente")
           else {
             val player = searched_player.head
             val player_id = player("id").as[Int]
@@ -133,9 +133,9 @@ class NBArequester(system: ActorSystem) extends Actor {
             futureStatsPlayer
               .map(stats => {
                 if (stats("meta")("total_count").as[Int] != 0)
-                  SendPlayerStats(playerStatsFinder(stats("data"), stats("meta")), ɼequest)
+                  ResolvesPlayerStats(playerStatsFinder(stats("data"), stats("meta")), ɼequest)
                 else
-                  SendError(ɼequest, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
+                  ResolvesError(ɼequest, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
               })
               .pipeTo(Sender)
           }
