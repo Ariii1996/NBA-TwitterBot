@@ -1,19 +1,51 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="resources/styles.css">
-    </head>
-    <body>
-        <h1 class="titulo">
-            <img src="resources/nba-logo.png" style="width: 55; height: 55">
-            Consultas del Torneo de la NBA
-            <img src="resources/nba-logo.png" style="width: 55; height: 55">
-        </h1>
-        <p>
-            <form action="/" method="post">
-                <label class="lbl" for="data" style="vertical-align: bottom;"> Nombre </label>
-                <input type="text" name="query" id="data" style="width: 350; height: 30" /><br><br><br><br>
-                <input class="boton" type="submit" value="Buscar data"/>
-            </form>
-        </p>
-    </body>
+<body>
+
+<p>NBA BOT</p>
+
+
+<form id="myForm"  action="/" method="post">
+    <div class="content">
+
+        <select id="actions" name="actions">
+            <option value="Jugador"> Estadisticas sobre un jugador </option>
+            <option value="Proximopartido"> Proximo partido </option>
+        </select>
+
+        <div id="Jugador" class="action">
+            <label for="playerName"> Nombre del jugador </label>
+            <input type="text" name="playerName" id="playerName" required>
+
+            <label for="playerSurname"> Apellido del jugador </label>
+            <input type="text" name="playerSurname" id="playerSurname" required>
+        </div>
+
+        <div id="Proximopartido" class="action">
+            <label for="teamName"> Nombre del equipo </label>
+            <input type="text" name="teamName" id="teamName" required>
+        </div>
+
+        <input type="button" onclick="myFunction()" value="Submit form">
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+  $("#actions").on('change', function(){
+    $(".action").hide();
+    $("#" + $(this).val()).fadeIn(700);
+    }).change();
+  });
+</script>
+
+<script>
+function myFunction() {
+  document.getElementById("myForm").submit();
+}
+</script>
+
+</body>
 </html>

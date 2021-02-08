@@ -1,16 +1,11 @@
-
 package twitterBot
 
-import com.danielasfregola.twitter4s.entities.Tweet
-import com.danielasfregola.twitter4s.TwitterRestClient
-import akka.actor.Actor
 import play.api.libs.json.JsValue
-
-
 
 class WebResponder() extends Responder {
 
   def respondNextGame(game: JsValue, _ɼequest: Request, team_name: String): Unit = {
+    println(game)
     val request = _ɼequest.asInstanceOf[WebRequest]
     println("respondNextGame")
   }

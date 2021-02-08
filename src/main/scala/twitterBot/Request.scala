@@ -26,11 +26,18 @@ class TwitterRequest(tweet: Tweet) extends Request {
   def getTweet(): Tweet = tweet
 }
 
-class WebRequest(value: String, complete: HttpEntity.Strict => Unit) extends Request{
+class WebRequest(value: (String, String, String), complete: HttpEntity.Strict => Unit) extends Request{
 
   override def getAction(): (String, String, String) = {
-    println(value)
-    ("Jugador", "Lebron", "James")
+
+    var (action, field1, field2) = value
+
+    action = action.toLowerCase().capitalize
+    field1 = field1.toLowerCase().capitalize
+    field2 = field2.toLowerCase().capitalize
+
+    println(action, field1, field2)
+    (action, field1, field2)
   }
 }
 

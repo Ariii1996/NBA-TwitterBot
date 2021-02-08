@@ -16,11 +16,27 @@ class WebBot(HashtagController: ActorRef, WebResponder: ActorRef) extends HttpAp
           getFromResource("home/index.html")
         },
         post {
-          formFields("query") { value  =>
-            println(s"Buscando nombre $value")
-            completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
-              val request = new WebRequest(value, f)
-              HashtagController ! ProcessRequest(request, WebResponder)
+          formFields("actions") { action  =>
+            println(s"La accion buscada fue: $action")
+            action match {
+              case "Jugador" => {
+                formFields("playerName", "playerSurname") { (name, surname) =>
+                  println(name, surname)
+                  completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
+                    val request = new WebRequest((action, name, surname), f)
+                    HashtagController ! ProcessRequest(request, WebResponder)
+                  }
+                }
+              }
+              case "Proximopartido" => {
+                formFields("teamName") { teamName =>
+                  println(teamName)
+                  completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
+                    val request = new WebRequest((action,teamName, ""), f)
+                    HashtagController ! ProcessRequest(request, WebResponder)
+                  }
+                }
+              }
             }
           }
         }
