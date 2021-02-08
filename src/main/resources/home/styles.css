@@ -26,6 +26,14 @@ body {
   top: 20px;
 }
 
+.linkTW {
+  color: white;
+  font-size: 10;
+  position: absolute;
+  bottom: 10;
+  right: 10;
+}
+
 .action {
   font-family: Arvo, monospace;
   color: white;
