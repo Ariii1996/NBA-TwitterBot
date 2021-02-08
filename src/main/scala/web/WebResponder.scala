@@ -21,7 +21,7 @@ class WebResponder() extends Responder {
       <h1 class="title"> Proximo partido de los $team_name es: </h1>
       <h2> $local_team vs $visitor_team </h2>
       <h2> Fecha: $date </h2>
-      <h2> Horario: $time (Arg) </h2>
+      <h2> Horario: $time </h2>
     """
     request.complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, htmlScreen))
   }

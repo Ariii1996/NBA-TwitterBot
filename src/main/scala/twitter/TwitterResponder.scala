@@ -19,7 +19,7 @@ class TwitterResponder() extends Responder {
       status=s"@${tweet.getTweet().user.get.screen_name} El próximo partido de los #${team_name} es:" +
         s"\n\n#$local_team vs #$visitor_team " +
         s"\nFecha: $date" +
-        s"\nHorario: $time (Arg)" ,
+        s"\nHorario: $time" ,
       in_reply_to_status_id=Option(tweet.getTweet().id)
     )
   }
