@@ -1,51 +1,56 @@
-<!DOCTYPE html>
 <html>
-<body>
+  <head>
+    <link rel="stylesheet" href="resources/styles.css" >
+  </head>
+  <!-- agregar el resources/ en href -->
+  <body>
+  <div class="container">
+    <img class="logo" src="resources/NBALogo.jpeg">
+    <p class="title">NBA BOT</p>
+    <form id="myForm"  action="/" method="post">
+      <div class="content">
 
-<p>NBA BOT</p>
-
-
-<form id="myForm"  action="/" method="post">
-    <div class="content">
-
-        <select id="actions" name="actions">
-            <option value="Jugador"> Estadisticas sobre un jugador </option>
-            <option value="Proximopartido"> Proximo partido </option>
+        <select id="actions" name="actions" class="actions">
+          <option value="Jugador"> Estadisticas sobre un jugador </option>
+          <option value="Proximopartido"> Proximo partido </option>
         </select>
 
         <div id="Jugador" class="action">
-            <label for="playerName"> Nombre del jugador </label>
-            <input type="text" name="playerName" id="playerName" required>
-
-            <label for="playerSurname"> Apellido del jugador </label>
-            <input type="text" name="playerSurname" id="playerSurname" required>
+          <label for="playerName"> Nombre del jugador </label>
+          <input type="text" name="playerName" id="playerName" required>
+        <br></br>
+          <label for="playerSurname"> Apellido del jugador </label>
+          <input type="text" name="playerSurname" id="playerSurname" required>
         </div>
 
         <div id="Proximopartido" class="action">
-            <label for="teamName"> Nombre del equipo </label>
-            <input type="text" name="teamName" id="teamName" required>
+          <label for="teamName"> Nombre del equipo </label>
+          <input type="text" name="teamName" id="teamName" required>
+          <img class="teams" src="resources/teams.jpeg">
         </div>
 
-        <input type="button" onclick="submitFunction()" value="Submit form">
-    </div>
-</form>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        </div>
+    </form>
+    <input class="searchButton" type="button" onclick="submitFunction()" value="Buscar">
+  </div>
+  </body>
 
-<script>
-    $(document).ready(function(){
-  $("#actions").on('change', function(){
-    $(".action").hide();
-    $("#" + $(this).val()).fadeIn(700);
-    }).change();
-  });
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script>
-function submitFunction() {
-  document.getElementById("myForm").submit();
-}
-</script>
+  <script>
+      $(document).ready(function(){
+    $("#actions").on('change', function(){
+      $(".action").hide();
+      $("#" + $(this).val()).fadeIn(700);
+      }).change();
+    });
+  </script>
 
-</body>
+  <script>
+  function submitFunction() {
+    document.getElementById("myForm").submit();
+  }
+  </script>
+
 </html>

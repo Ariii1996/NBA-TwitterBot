@@ -15,22 +15,20 @@ class WebBot(HashtagController: ActorRef, WebResponder: ActorRef) extends HttpAp
           getFromResource("home/index.html")
         },
         post {
-          formFields("actions") { action  =>
-            action match {
-              case "Jugador" => {
-                formFields("playerName", "playerSurname") { (name, surname) =>
-                  completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
-                    val request = new WebRequest((action, name, surname), f)
-                    HashtagController ! ProcessRequest(request, WebResponder)
-                  }
+          formFields("actions") {
+            case action@"Jugador" => {
+              formFields("playerName", "playerSurname") { (name, surname) =>
+                completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
+                  val request = new WebRequest((action, name, surname), f)
+                  HashtagController ! ProcessRequest(request, WebResponder)
                 }
               }
-              case "Proximopartido" => {
-                formFields("teamName") { teamName =>
-                  completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
-                    val request = new WebRequest((action,teamName, ""), f)
-                    HashtagController ! ProcessRequest(request, WebResponder)
-                  }
+            }
+            case action@"Proximopartido" => {
+              formFields("teamName") { teamName =>
+                completeWith(implicitly[ToResponseMarshaller[HttpEntity.Strict]]) { f =>
+                  val request = new WebRequest((action, teamName, ""), f)
+                  HashtagController ! ProcessRequest(request, WebResponder)
                 }
               }
             }
@@ -38,7 +36,7 @@ class WebBot(HashtagController: ActorRef, WebResponder: ActorRef) extends HttpAp
         }
       )
     } ~
-    path("home" / Remaining) { resource =>
+    path("resources" / Remaining) { resource =>
       get{
         getFromResource("home/" + resource)
       }

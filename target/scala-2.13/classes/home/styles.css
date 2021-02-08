@@ -1,18 +1,54 @@
 body {
-  background-color: #9d2121;
-  text-align: center;
+  background-color: #0C459C;
+  font-family: Arvo, monospace;
   color: white;
+  font-weight: bold;
+  font-size: 25;
+  text-align: center;
 }
 
-.titulo {
-    margin: 10%;
-    color: black;
-    font-size: 56;
-    text-align:center
+.container {
+  position: relative;
 }
 
-.boton {
-  background-color: #008CBA;
+.logo {
+  position: absolute;
+  width: 220px;
+  height: 462px;
+  left: 10px;
+}
+
+.teams {
+  position: absolute;
+  width: 234px;
+  height: 395px;
+  right: 10px;
+  top: 20px;
+}
+
+.action {
+  font-family: Arvo, monospace;
+  color: white;
+  font-weight: bold;
+  font-size: 25;
+}
+
+.title {
+  margin-top: 50;
+  font-family: Arvo, monospace;
+  color: white;
+  font-size: 90;
+  text-align: center;
+  margin-bottom: 45;
+}
+
+.actions {
+  margin-bottom: 50
+}
+
+.searchButton {
+  margin-top: 40px;
+  background-color: #D40225;
   border: none;
   color: white;
   padding: 15px 32px;
@@ -20,14 +56,26 @@ body {
   text-decoration: none;
   display: inline-block;
   font-size: 20px;
+  border-radius: 10px;
 }
 
-.lbl {
-    text-align: center;
-    margin-right: 30px;
-    font-size: 30;
+div.request {
+  border-color: #D40225;
+  border-style: solid;
+  border-width: 5;
+  font-size: 12;
+  text-align: start;
+  padding-left: 10;
+  padding-right: 10;
+  position: absolute;
+  margin-top: 30;
+  align-self: center;
+  margin-left: 4%;
+  width: 75%
 }
 
-p {
-  color: white;
+.requestTitle {
+  font-style: italic;
+  text-decoration: underline;
+  font-size: 30;
 }
