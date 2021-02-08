@@ -1,13 +1,11 @@
-package twitterBot
+package twitter
 
-import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.TwitterRestClient
-import akka.actor.Actor
 import play.api.libs.json.JsValue
+import helpers.{Request, Responder, TwitterRequest}
 
 class TwitterResponder() extends Responder {
 
-  val Utils = new Utils
   val client = TwitterRestClient()
 
   override def respondNextGame(game: JsValue, _tweet: Request, team_name: String): Unit = {

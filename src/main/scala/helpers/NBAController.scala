@@ -1,4 +1,4 @@
-package twitterBot
+package helpers
 
 import akka.actor.{Actor, ActorRef, Status}
 import com.danielasfregola.twitter4s.entities.Tweet
@@ -9,7 +9,7 @@ case class ResolvesNextGame(game: JsValue, request: Request, team_name: String)
 case class ResolvesPlayerStats(player: Seq[Any], request: Request)
 case class ResolvesError(request: Request, message: String)
 
-class HashtagController(NBArequester: ActorRef) extends Actor {
+class NBAController(NBArequester: ActorRef) extends Actor {
 
   var request: Request = null
   var Responder: ActorRef = null
@@ -21,13 +21,12 @@ class HashtagController(NBArequester: ActorRef) extends Actor {
       this.request = request
       this.Responder = responder
 
-      var (action, option1, option2) = request.getAction()
+      val (action, option1, option2) = request.getAction()
 
       action match {
         case "Jugador" => {
-          if(option1 != "" & option2 != "")
-            NBArequester ! searchPlayerStats(option1, option2, request)
-          else Responder ! ResolvesError(request, "No se introdujo el nombre o el apellido del jugador")
+          if(option1 != "" & option2 != "") NBArequester ! searchPlayerStats(option1, option2, request)
+          else Responder ! SendError(request, "No se introdujo el nombre o el apellido del jugador")
         }
         case "Proximopartido" => {
           if(option1 != "") NBArequester ! searchTeamNextGame(option1, request)

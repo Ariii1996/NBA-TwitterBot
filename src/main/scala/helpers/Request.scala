@@ -1,4 +1,4 @@
-package twitterBot
+package helpers
 import akka.http.scaladsl.model.HttpEntity
 import com.danielasfregola.twitter4s.entities.Tweet
 
@@ -26,7 +26,7 @@ class TwitterRequest(tweet: Tweet) extends Request {
   def getTweet(): Tweet = tweet
 }
 
-class WebRequest(value: (String, String, String), complete: HttpEntity.Strict => Unit) extends Request{
+class WebRequest(value: (String, String, String), val complete: HttpEntity.Strict => Unit) extends Request {
 
   override def getAction(): (String, String, String) = {
 
@@ -35,8 +35,6 @@ class WebRequest(value: (String, String, String), complete: HttpEntity.Strict =>
     action = action.toLowerCase().capitalize
     field1 = field1.toLowerCase().capitalize
     field2 = field2.toLowerCase().capitalize
-
-    println(action, field1, field2)
     (action, field1, field2)
   }
 }

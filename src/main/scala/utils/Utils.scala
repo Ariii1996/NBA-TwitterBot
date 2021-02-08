@@ -1,7 +1,7 @@
-package twitterBot
+package utils
 
-import java.time.{LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneId}
 import java.util.Locale
 
 class Utils() {

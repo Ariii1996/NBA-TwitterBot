@@ -1,10 +1,11 @@
 
-package twitterBot
+package helpers
 
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.TwitterRestClient
 import akka.actor.Actor
 import play.api.libs.json.JsValue
+import utils.Utils
 
 case class SendNextGame(game: JsValue, request: Request, team_name: String)
 case class SendPlayerStats(player: Seq[Any], request: Request)
@@ -14,6 +15,8 @@ case class SendInternalError(request: Request)
 case class SendWelcome(request: Request)
 
 abstract class Responder() extends Actor {
+
+  val Utils = new Utils
 
   def receive = {
     case SendNextGame(game, request, team_name) => {

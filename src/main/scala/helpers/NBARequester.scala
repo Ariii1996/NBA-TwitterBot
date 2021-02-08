@@ -1,4 +1,4 @@
-package twitterBot
+package helpers
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -109,7 +109,7 @@ class NBArequester(system: ActorSystem) extends Actor {
             responseFuture
               .map(games => ResolvesNextGame(searchNextGame(games), ɼequest, team_name))
               .pipeTo(Sender)
-          }else Sender ! ResolvesError(ɼequest, "No se introdujo el nombre del equipo correctamente")
+          }else Sender ! SendError(ɼequest, "No se introdujo el nombre del equipo correctamente")
         })
     }
     case searchPlayerStats(player_firstname, player_lastname, ɼequest) => {
@@ -125,7 +125,7 @@ class NBArequester(system: ActorSystem) extends Actor {
           val (player_for_name, player_for_surname) = playerAux
           val searched_player = searchPlayer(player_for_name, player_for_surname)
           if (searched_player.isEmpty)
-            Sender ! ResolvesError(ɼequest, "No se introdujo el nombre o apellido del jugador correctamente")
+            Sender ! SendError(ɼequest, "No se introdujo el nombre o apellido del jugador correctamente")
           else {
             val player = searched_player.head
             val player_id = player("id").as[Int]
@@ -135,7 +135,7 @@ class NBArequester(system: ActorSystem) extends Actor {
                 if (stats("meta")("total_count").as[Int] != 0)
                   ResolvesPlayerStats(playerStatsFinder(stats("data"), stats("meta")), ɼequest)
                 else
-                  ResolvesError(ɼequest, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
+                  SendError(ɼequest, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
               })
               .pipeTo(Sender)
           }

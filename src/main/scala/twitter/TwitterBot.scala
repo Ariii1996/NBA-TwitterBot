@@ -1,8 +1,9 @@
-package twitterBot
+package twitter
 
 import akka.actor.{Actor, ActorRef}
-import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.TwitterStreamingClient
+import com.danielasfregola.twitter4s.entities.Tweet
+import helpers.{ProcessRequest, TwitterRequest}
 
 case class ListenMentions()
 
