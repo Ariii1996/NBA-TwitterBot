@@ -1,4 +1,4 @@
-package twitterBot
+package helpers
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -11,15 +11,16 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import play.api.libs.json._
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.pattern.pipe
 import akka.util.Timeout
 
 import scala.util.{Failure, Success}
 import scala.concurrent.duration.DurationInt
 
-case class searchTeamNextGame(team_name: String, tweet: Tweet)
-case class searchPlayerStats(player_firstname: String, player_lastname: String, tweet: Tweet)
+case class searchTeamNextGame(team_name: String, ɼequest: Request)
+case class searchPlayerStats(player_firstname: String, player_lastname: String, ɼequest: Request)
 
-class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Actor {
+class NBArequester(system: ActorSystem) extends Actor {
 
   def doRequest(query: String) = {
     implicit val actorSystem = system
@@ -71,10 +72,10 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
     var height = 0.0
     if (height_feet != JsNull && height_inches != JsNull)
       height = ((height_feet.as[Int] * 0.3048 + height_inches.as[Int] * 0.0254) * 100).round / 100.toDouble
-    val weight_punds = stats_data(stats_lenght)("player")("weight_pounds")
+    val weight_pounds = stats_data(stats_lenght)("player")("weight_pounds")
     var weight = 0.0
-    if (weight_punds != JsNull)
-      weight = ((weight_punds.as[Int] * 0.453592) * 100).round / 100.toDouble
+    if (weight_pounds != JsNull)
+      weight = ((weight_pounds.as[Int] * 0.453592) * 100).round / 100.toDouble
     val team = stats_data(stats_lenght)("team")("full_name").as[String].replaceAll("\\s", "")
     var (pointsPerGame, reboundsPerGame, blocksPerGame, assistsPerGame, stealsPerGame) = (0.0,0.0,0.0,0.0,0.0)
     for (i <- 0 to stats_lenght) {
@@ -84,88 +85,61 @@ class NBArequester(system: ActorSystem, TwitterResponder: ActorRef) extends Acto
       assistsPerGame += stats_data(i)("ast").as[Int]
       stealsPerGame += stats_data(i)("stl").as[Int]
     }
-
     val prev_stats = Seq(name_and_surname, team, position, height, weight)
     prev_stats ++ Seq(
       pointsPerGame,
       assistsPerGame,
       reboundsPerGame,
       blocksPerGame,
-      stealsPerGame,
+      stealsPerGame
       ).map(stat => ((stat / stats_lenght) * 100).round / 100.toDouble)
   }
 
   def receive: Receive = {
-
-    case searchTeamNextGame(team_name, tweet) => {
-
+    case searchTeamNextGame(team_name, ɼequest) => {
       val responseFuture = doRequest("teams")
-
-      responseFuture.onComplete {
-        case Success(teams) =>
+      val Sender = sender()
+      responseFuture
+        .map(teams => {
           val id_team = searchTeamId(teams, team_name)
           if (id_team > 0){
             val format = new SimpleDateFormat("yyyy-MM-dd")
             val today = format.format(Calendar.getInstance().getTime())
             val responseFuture = doRequest(s"games?team_ids[]=${id_team.toString}&start_date=$today")
-
-            responseFuture.onComplete {
-              case Success(games) =>
-                val game = searchNextGame(games)
-                TwitterResponder ! TweetNextGame(game, tweet, team_name)
-              case Failure(e) =>{
-                println(s"Error buscando id de equipo: $e.")
-                TwitterResponder ! TweetInternalError(tweet)
-              }
-            }
-          }else TwitterResponder ! TweetError(tweet, "No se introdujo el nombre del equipo correctamente")
-        case Failure(e) =>{
-          println(s"Error buscando equipos: $e.")
-          TwitterResponder ! TweetInternalError(tweet)
-        }
-      }
+            responseFuture
+              .map(games => ResolvesNextGame(searchNextGame(games), ɼequest, team_name))
+              .pipeTo(Sender)
+          }else Sender ! SendError(ɼequest, "No se introdujo el nombre del equipo correctamente")
+        })
     }
-
-    case searchPlayerStats(player_firstname, player_lastname, tweet) => {
-
+    case searchPlayerStats(player_firstname, player_lastname, ɼequest) => {
+      val Sender = sender()
       val futureNamePlayer = doRequest(s"players?per_page=100&search=$player_firstname")
       val futureSurnamePlayer = doRequest(s"players?per_page=100&search=$player_lastname")
-
       val player = for {
         player_for_name <- futureNamePlayer
         player_for_surname <- futureSurnamePlayer
       }yield(player_for_name, player_for_surname)
-
-      player.onComplete{
-        case Success((player_for_name,player_for_surname)) =>
+      player
+        .map(playerAux => {
+          val (player_for_name, player_for_surname) = playerAux
           val searched_player = searchPlayer(player_for_name, player_for_surname)
           if (searched_player.isEmpty)
-            TwitterResponder ! TweetError(tweet, "No se introdujo el nombre o apellido del jugador correctamente")
+            Sender ! SendError(ɼequest, "No se introdujo el nombre o apellido del jugador correctamente")
           else {
             val player = searched_player.head
             val player_id = player("id").as[Int]
             val futureStatsPlayer = doRequest(s"stats/?seasons[]=2020&per_page=110&player_ids[]=$player_id")
-
-            futureStatsPlayer.onComplete {
-              case Success(stats) =>{
+            futureStatsPlayer
+              .map(stats => {
                 if (stats("meta")("total_count").as[Int] != 0)
-                  TwitterResponder ! TweetPlayerStats(playerStatsFinder(stats("data"), stats("meta")), tweet)
+                  ResolvesPlayerStats(playerStatsFinder(stats("data"), stats("meta")), ɼequest)
                 else
-                  TwitterResponder ! TweetError(tweet, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
-              }
-
-              case Failure(e) => {
-                println(s"Hubo un error al buscar los stats $e.")
-                TwitterResponder ! TweetInternalError(tweet)
-              }
-            }
+                  SendError(ɼequest, "El jugador que se introdujo no se encuentra disputando la temporada actual de la NBA")
+              })
+              .pipeTo(Sender)
           }
-        case Failure(e) => {
-          println(s"Hubo un error con el player $e.")
-          TwitterResponder ! TweetInternalError(tweet)
-        }
-      }
-
+        })
     }
   }
 }

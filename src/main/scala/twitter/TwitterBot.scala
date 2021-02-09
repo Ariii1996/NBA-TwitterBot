@@ -1,12 +1,13 @@
-package twitterBot
+package twitter
 
 import akka.actor.{Actor, ActorRef}
-import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.TwitterStreamingClient
+import com.danielasfregola.twitter4s.entities.Tweet
+import helpers.{ProcessRequest, TwitterRequest}
 
 case class ListenMentions()
 
-class TwitterBot(HashtagController: ActorRef) extends Actor {
+class TwitterBot(HashtagController: ActorRef, TwitterResponder: ActorRef) extends Actor {
 
   val id = 1348657069847666688L
 
@@ -20,7 +21,8 @@ class TwitterBot(HashtagController: ActorRef) extends Actor {
     case ListenMentions => {
       streamingClient.filterStatuses(tracks=NBAAccount) {
         case tweet: Tweet => {
-          if(id != tweet.user.get.id) HashtagController ! ManageTweet(tweet)
+          val request = new TwitterRequest(tweet)
+          if(id != tweet.user.get.id) HashtagController ! ProcessRequest(request, TwitterResponder)
         }
       }
     }
