@@ -14,6 +14,7 @@ class WebBot(HashtagController: ActorRef, WebResponder: ActorRef) extends HttpAp
         get {
           getFromResource("home/index.html")
         },
+        //Esto deberia ser un get y mandar lo que queremos por query params
         post {
           formFields("actions") {
             case action@"Jugador" => {

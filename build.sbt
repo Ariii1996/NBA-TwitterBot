@@ -17,13 +17,3 @@ libraryDependencies ++= Seq(
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.8.0"
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
 libraryDependencies += "com.danielasfregola" %% "twitter4s" % "6.2"
-
-enablePlugins(JavaAppPackaging)
-
-// heroku deployment configs
-herokuAppName in Compile := "nba-information-twitter-bot" // unique Heroku app name
-herokuJdkVersion in Compile := "11.0.9.1"
-herokuProcessTypes in Compile := Map(
-  "web" -> "target/universal/stage/bin/twitterbot -Dhttp.port=$PORT",
-  "worker" -> "java -jar target/universal/stage/lib/my-worker.jar"
-)
